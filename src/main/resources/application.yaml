@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: AuthSystem
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/auth_app?createDatabaseIfNotExist=true
+    username: yash
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    show-sql: true   # ✅ yaha hona chahiye (bahar)
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+server:
+  port: 8090
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:hakuhfhkjwfhnckjhwiohkrwvewkcniuwhkdsvkudsfhkjdfnsdkjfkjdfndkjfndkjsnfdskjnrn}
+    issuer: ${JWT_ISSUER:api.auth.com}
+    access-ttl-seconds: ${JWT_ACCESS_TTL_SECONDS:3600}
+    refresh-ttl-seconds: ${JWT_REFRESH_TTL_SECONDS:86400}
+    refreshtoken-cookie-name: ${JWT_REFRESH_COOKIE_NAME:refreshtoken}
+    cookie-secure: ${JWT_COOKIE_SECURE:true}
+    cookie-hhtp-only: ${JWT_HTTP_COOKIE_ONLY:TRUE}
+    cookie-same-site: ${JWT_COOKIE_SAME_SITE:lax}
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
