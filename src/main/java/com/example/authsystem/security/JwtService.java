@@ -50,7 +50,7 @@ public class JwtService {
                 ? List.of()
                 : user.getRoles()
                   .stream()
-                  .map(Role::getRoleName)
+                  .map(role -> role.getRoleName())
                   .toList();
 
         return Jwts.builder()
