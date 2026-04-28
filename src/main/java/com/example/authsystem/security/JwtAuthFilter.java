@@ -97,18 +97,27 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             });
 
         } catch (ExpiredJwtException e) {
+            request.setAttribute("error","Token Expired");
             System.out.println("JWT Expired: " + e.getMessage());
 
         } catch (MalformedJwtException e) {
+            request.setAttribute("error","Invalid Token");
             System.out.println("Invalid JWT Format: " + e.getMessage());
 
         } catch (JwtException e) {
+            request.setAttribute("error","Invalid Token");
             System.out.println("JWT Error: " + e.getMessage());
 
         } catch (Exception e) {
+            request.setAttribute("error","Invalid Token");
             System.out.println("General Error: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return request.getRequestURI().startsWith("/api/auth");
     }
 }
