@@ -38,6 +38,7 @@ public class SecurityConfig {
             "/api/auth/login",
             "/api/auth/refresh",
             "/api/auth/register",
+            "/api/auth/logout",
             "/api/users"
     };
 

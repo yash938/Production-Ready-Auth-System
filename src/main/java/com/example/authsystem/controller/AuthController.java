@@ -8,6 +8,7 @@ import com.example.authsystem.repositories.UserRepo;
 import com.example.authsystem.security.CookieService;
 import com.example.authsystem.security.JwtService;
 import com.example.authsystem.service.AuthService;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -78,6 +80,38 @@ public class AuthController {
                         modelMapper.map(user, UserDto.class)),
                 HttpStatus.CREATED
         );
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request,
+                                       HttpServletResponse response) {
+
+        readRefreshTokenFromRequest(null, request).ifPresent(token -> {
+            try {
+                if (jwtService.isRefreshToken(token)) {
+
+                    String jti = jwtService.getJti(token);
+
+                    refreshTokenRepo.findByJti(jti).ifPresent(rt -> {
+                        rt.setRevoked(true);
+                        refreshTokenRepo.save(rt);
+                        System.out.println("Refresh token revoked: " + jti);
+                    });
+                }
+            } catch (JwtException jwt) {
+                System.out.println("Invalid token during logout: " + jwt.getMessage());
+                //logout me exception throw nahi karte (user already logout ho raha hai)
+            }
+        });
+
+        //IMPORTANT: cookie delete karo
+        cookieService.clearRefreshCookie(response);
+        cookieService.addNoStoreHeader(response);
+        SecurityContextHolder.clearContext();
+
+        System.out.println("Logout successful");
+
+        return ResponseEntity.noContent().build(); // 204
     }
 
     // ================= REFRESH =================
