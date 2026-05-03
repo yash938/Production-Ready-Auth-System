@@ -36,8 +36,8 @@ public class SecurityConfig {
 
     private static String[] PUBLIC_POST_URL = {
             "/api/auth/login",
-            "/api/auth/register",
             "/api/auth/refresh",
+            "/api/auth/register",
             "/api/users"
     };
 
