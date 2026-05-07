@@ -85,7 +85,6 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request,
                                        HttpServletResponse response) {
-
         readRefreshTokenFromRequest(null, request).ifPresent(token -> {
             try {
                 if (jwtService.isRefreshToken(token)) {
